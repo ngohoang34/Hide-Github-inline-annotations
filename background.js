@@ -1,5 +1,3 @@
-// background.js
-
 let isEnabled = false;
 
 chrome.action.onClicked.addListener(async (tab) => {
@@ -10,14 +8,27 @@ chrome.action.onClicked.addListener(async (tab) => {
     if (isEnabled) {
         await chrome.scripting.insertCSS({
             target: { tabId: tab.id },
-            css: `tr.js-inline-annotations { display: none !important; }`
+            css: `tr.js-inline-annotations { display: none !important; }`,
         });
         chrome.action.setIcon({ path: "icons/icon-on.png", tabId: tab.id });
     } else {
         await chrome.scripting.removeCSS({
             target: { tabId: tab.id },
-            css: `tr.js-inline-annotations { display: none !important; }`
+            css: `tr.js-inline-annotations { display: none !important; }`,
         });
         chrome.action.setIcon({ path: "icons/icon-off.png", tabId: tab.id });
+    }
+    if (tab.url.includes("github.com")) {
+        chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            files: ["content.js"],
+        }).then(() => {
+            chrome.tabs.sendMessage(tab.id, {
+                action: "toggleLogo",
+                enabled: isEnabled,
+            });
+        }).catch((err) => {
+            console.error("Failed to inject content script:", err);
+        });
     }
 });

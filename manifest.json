@@ -20,5 +20,28 @@
     },
     "icons": {
         "128": "icons/icon-on.png"
-    }
+    },
+    "host_permissions": [
+        "https://github.com/*"
+    ],
+    "content_scripts": [
+        {
+            "matches": [
+                "https://github.com/*"
+            ],
+            "js": [
+                "content.js"
+            ]
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "icons/icon-on.png"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ]
 }
